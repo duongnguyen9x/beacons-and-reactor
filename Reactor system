@@ -3,6 +3,39 @@ On salt-master
 sudo vim /etc/salt/master.d/reactor.conf
 reactor:
   - 'salt/beacon/*/inotify//etc/ssh/sshd_config':
-    - /srv/salt/reactor/ssh_config/ssh_config.sls
+    - /srv/salt/reactor/ssh_config.sls
 
-sudo vim /srv/salt/reactor/ssh_config/ssh_config.sls
+sudo vim /srv/salt/reactor/ssh_config.sls
+enforce_salt_config:
+  local.state.apply:
+    - tgt: {{ data['id'] }}
+    - arg:
+      - sshd
+
+sudo vim /srv/salt/sshd/init.sls
+sshd_config:
+  file.managed:
+    - name: /etc/ssh/sshd_config
+    - source: salt://sshd/templates/sshd_config
+    - user: root
+    - group: root
+    - mode: '0644'
+
+stop_sshd:
+  service.dead:
+    - name: sshd
+
+start_sshd:
+  service.running:
+    - name: sshd
+    - require:
+      - service: stop_sshd
+      
+Make the sshd_config on source /srv/salt/sshd/templates/sshd_config
+      
+Then we start salt-master and apply this sshd state
+sudo systemctl restart salt-master
+sudo systemctl status salt-master
+sudo salt-master '*' state.apply sshd
+
+Then when we change anything on sshd_config file on minion. It will comeback to the same file in sshd_config file in template on salt-master
