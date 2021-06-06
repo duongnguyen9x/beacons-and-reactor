@@ -39,3 +39,6 @@ sudo systemctl status salt-master
 sudo salt-master '*' state.apply sshd
 
 Then when we change anything on sshd_config file on minion. It will comeback to the same file in sshd_config file in template on salt-master
+
+
+https://www.linode.com/docs/guides/monitoring-salt-minions-with-beacons/
