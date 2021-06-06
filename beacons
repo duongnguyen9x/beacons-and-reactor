@@ -1,0 +1,26 @@
+In salt minion (minion config):
+
+sudo vim /etc/salt/minion
+beacons:
+  inotify:
+    - { "files": { "/etc/ssh/sshd_config": { "mask" : ["modify"] } } }   #(It can be delete it self on so, it should in this form cause it have error with dict in py file )
+    - disable_during_state_run: True
+
+sudo systemctl restart salt-minion
+sudo systemctl status salt-minion
+
+Or in pillar in salt master, you can do the same. But you have to take few steps here:
+sudo vim /srv/pillar/beacons.sls 
+sudo vim /srv/pillar/top.sls
+sudo salt '*' state.highstate
+sudo salt '*' saltutil.refresh_pillar
+
+And then on salt master, take this command: sudo salt-run state.event pretty=true
+At the same time, on salt minion, change file "/etc/ssh/sshd_config"
+Om master, it will show an event:
+salt/beacon/salt-minion.internal.cloudapp.net/inotify//tmp/services	{
+    "_stamp": "2021-06-05T15:02:28.584488",
+    "change": "IN_IGNORED",
+    "id": "salt-minion.internal.cloudapp.net",
+    "path": "/tmp/services"
+}
