@@ -1,4 +1,7 @@
 In salt minion (minion config):
+It should be install first:
+sudo apt-get update -y
+sudo apt-get install -y python-pyinotify
 
 sudo vim /etc/salt/minion
 beacons:
