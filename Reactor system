@@ -1,0 +1,8 @@
+On salt-master
+
+sudo vim /etc/salt/master.d/reactor.conf
+reactor:
+  - 'salt/beacon/*/inotify//etc/ssh/sshd_config':
+    - /srv/salt/reactor/ssh_config/ssh_config.sls
+
+sudo vim /srv/salt/reactor/ssh_config/ssh_config.sls
